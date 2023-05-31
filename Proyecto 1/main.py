@@ -1,9 +1,30 @@
 from syntax import *
+import sys
 
-print("Inserta la cadena a procesar:")
-cadena = input(">> ")
+def readFile(fileName):
+    lines = []
+    with open(fileName) as archivo:
+        lines = archivo.readlines()
+    return lines
 
-tokens: list[Token] = Scanner.escanear(cadena)
+fileName = sys.argv[1] if len(sys.argv) > 1 else ""
 
-for token in tokens:
-    print(token.__str__())
+if fileName != "":
+    print(f"Procesando archivo {fileName}...")
+    lines = readFile(fileName)
+    i = 1
+    print(lines)
+    for line in lines:
+        print(f"--- Linea {i}")
+        i += 1
+        tokens: list[Token] = Scanner.escanear(line)
+        
+        for token in tokens:
+            print(token.__str__())
+else:
+    while(True):
+        line = input("> ")
+        tokens: list[Token] = Scanner.escanear(line)
+        
+        for token in tokens:
+            print(token.__str__())
