@@ -1,0 +1,6 @@
+if(a*2==){}
+var /*comentario callese*/ b = 399.9842;
+var b = 399.9842.45 - //+ *2356
+for(;i<=10;i=i+2){{print "Hola mundo"}}
+var c = “Hola mundo
+Archivo:

@@ -1,23 +1,35 @@
 from enums import *
 
 class Token:
-    reservados = [item.value for item in Reservado]
-    especiales = [item.value for item in Especial]
-    numeros = [item.value for item in Numero]
+    def getToken(cadena) -> str:
+        # Lista de detección con prioridad
+        tipos: list[Node] = [
+            Comentario,
+            Cadena,
+            Espacio,
+            Numero,
+            Reservado,
+            Especial,
+            Identificador,
+            Newline,
+            EOF
+        ]
+        
+        token = ''
+        match = False
+        splits = ['', '']
+        for tipo in tipos:
+            if (found := tipo.match(cadena)) != '':
+                token = Token(tipo(found))
+                match = True
+                if cadena != "\n":
+                    splits = cadena.split(found, 1)
+                break
 
-    def __init__(self, cadena) -> None:
-        if cadena in self.reservados:
-            self.valor = Reservado(cadena)
-        elif cadena in self.especiales:
-            self.valor = Especial(cadena)
-        elif cadena in self.numeros:
-            self.valor = Numero(cadena)
-        elif cadena[0] == '"':
-            self.valor = Cadena(cadena[1:-1])
-        elif cadena == '\0':
-            self.valor = EOF()
-        else:
-            self.valor = Identificador(cadena)
+        return match, token, splits[0], splits[1]
+    
+    def __init__(self, valor) -> None:
+        self.valor = valor
     
     def tipo(self):
         if hasattr(self.valor, "nombre"):
@@ -30,65 +42,20 @@ class Token:
 
 class Scanner():
     def escanear(cadena: str):
-        resultado = []
-        tokens = cadena.split(" ")
-        buscarCadena = False
-        charIndex = 0
-        progresoCadena = ""
-        
-        for token in tokens:
-            charIndex += len(token)
+        resultado = Scanner.findTokens(cadena)
 
-            if buscarCadena:
-                progresoCadena += " " + token
-                if token[-1:] == '"':
-                    buscarCadena = False
-                    resultado.append(Token(progresoCadena))
-                    progresoCadena = ""
-            elif token[0] == '"':
-                buscarCadena = True
-                progresoCadena += token
-            else:
-                resultado += Scanner.detectarToken(token)
-            
-            charIndex += 1
-        
-        resultado.append(Token('\0'))
-        
         return resultado
 
-    def detectarToken(token: str):
-        if len(token) == 0:
+    def findTokens(cadena: str):
+        if len(cadena) == 0:
             return []
-        elif len(token) == 1:
-            return [Token(token)]
-        elif any((match := substring) in token for substring in Token.especiales):
-            index = token.index(match)
-            t1 = token[:index]
-            t2 = token[index]
-            t3 = token[index+1:]
-            return [*Scanner.detectarToken(t1), Token(t2), *Scanner.detectarToken(t3)]
-        elif not token[-1:].isalnum():
-            t1 = token
-            t2 = ''
-            i = len(token) - 1
-            while not token[i].isalnum():
-                t1 = t1[:-1]
-                t2 += token[i] + t2
-                i -= 1
-                if i==0:
-                    break
-            return [*Scanner.detectarToken(t1), Token(t2)]
-        elif not token[0].isalpha():
-            t1 = ''
-            t2 = token
-            i = 0
-            while not token[i].isalpha():
-                t1 += token[i]
-                t2 = t2[1:]
-                i += 1
-                if i==len(token):
-                    break
-            return [Token(t1), *Scanner.detectarToken(t2)]
+        
+        match, token, prev, next = Token.getToken(cadena)
+        if match:
+            if type(token.valor) is Espacio:
+                return [*Scanner.findTokens(prev), *Scanner.findTokens(next)]
+            else:
+                return [*Scanner.findTokens(prev), token, *Scanner.findTokens(next)]
         else:
-            return [Token(token)]
+            raise Exception(f'Error! token inválida -> "{cadena}"')
+        
