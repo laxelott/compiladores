@@ -150,3 +150,33 @@ class Espacio(Node):
             return ' '
         else:
             return ''
+        
+class Select(Node):
+    nombre = 'select'
+    def __init__(self, cadena) -> None:
+        super().__init__(cadena)
+    def match(str) -> str:
+        if (str == 'select'):
+            return 'SELECT'
+        else:
+            return ''
+
+class From(Node):
+    nombre = 'from'
+    def __init__(self, cadena) -> None:
+        super().__init__(cadena)
+    def match(str) -> str:
+        if (str == 'from'):
+            return 'FROM'
+        else:
+            return ''
+
+class Distinct(Node):
+    nombre = 'distinct'
+    def __init__(self, cadena) -> None:
+        super().__init__(cadena)
+    def match(str) -> str:
+        if (str == 'distinct'):
+            return 'DISTINCT'
+        else:
+            return ''

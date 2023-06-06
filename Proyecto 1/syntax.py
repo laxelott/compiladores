@@ -12,6 +12,9 @@ class Token:
             Especial,
             Identificador,
             Newline,
+            Select,
+            From,
+            Distinct,
             EOF
         ]
         
