@@ -39,6 +39,24 @@ class Reservado(Node):
         y = 'and'			# and
         o = 'or'			# or
 
+class SQLReserved(Node):
+    nombre = "sql"
+    def __init__(self, cadena) -> None:
+        super().__init__(cadena)
+    def match(str) -> str:
+        list = [item.value for item in Reservado.elementos]
+        if str in list:
+            return Reservado.elementos(str).value
+        else:
+            return ''
+    
+    # Usar declaración funcional porque "from" es reservado
+    elementos = Enum('elementos',
+        ['select', 'SELECT'],
+        ['from', 'FROM'],
+        ['distinct', 'DISTINCT']
+    )
+
 class Especial(Node):
     nombre = 'especial'
     def __init__(self, cadena) -> None:
@@ -148,35 +166,5 @@ class Espacio(Node):
     def match(str) -> str:
         if (str == ' '):
             return ' '
-        else:
-            return ''
-        
-class Select(Node):
-    nombre = 'select'
-    def __init__(self, cadena) -> None:
-        super().__init__(cadena)
-    def match(str) -> str:
-        if (str == 'select'):
-            return 'SELECT'
-        else:
-            return ''
-
-class From(Node):
-    nombre = 'from'
-    def __init__(self, cadena) -> None:
-        super().__init__(cadena)
-    def match(str) -> str:
-        if (str == 'from'):
-            return 'FROM'
-        else:
-            return ''
-
-class Distinct(Node):
-    nombre = 'distinct'
-    def __init__(self, cadena) -> None:
-        super().__init__(cadena)
-    def match(str) -> str:
-        if (str == 'distinct'):
-            return 'DISTINCT'
         else:
             return ''

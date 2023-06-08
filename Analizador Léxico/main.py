@@ -1,5 +1,5 @@
-from syntax import *
 import sys
+from syntax import *
 import re
 
 def readFile(fileName):
