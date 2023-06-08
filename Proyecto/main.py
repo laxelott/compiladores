@@ -1,8 +1,7 @@
 import sys
 from syntax import *
-from parseDescendiente import *
-# from parseAscendiente import *
-
+from parse import *
+from patterns import *
 
 def readFile(filename):
     lines = []

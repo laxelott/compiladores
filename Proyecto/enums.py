@@ -33,8 +33,11 @@ class Reservado(Node):
         ademas = 'else'		# else
         nulo = 'null'		# null
         para = 'for'		# for
-        funcion = 'def'		# def
-        var = 'var'			# var
+        funcion = 'fun'		# def
+        variable = 'var'    # var
+        integer = 'number'  # number
+        cadena = 'string'   # str
+        id = 'id'           # id
         si = 'if'			# if
         y = 'and'			# and
         o = 'or'			# or
