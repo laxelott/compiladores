@@ -144,16 +144,6 @@ class Comentario(Node):
             return match
         else:
             return ''
-    
-class Newline(Node):
-    name = 'newline'
-    def __init__(self, value) -> None:
-        super().__init__(value)
-    def match(str) -> str:
-        if (str == '\n'):
-            return 'Newline'
-        else:
-            return ''
 
 class EOF(Node):
     name = 'end-of-file'

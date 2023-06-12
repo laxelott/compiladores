@@ -46,30 +46,30 @@ class Patterns:
                 'error': 'CLASS_DECL: class faltante',
                 'next': [
                     {
-                    'match': Identificador,
-                    'required': True,
-                    'error': 'CLASS_DECL: id faltante'
-                },
-                {
-                    'match': self.CLASS_INHER,
-                    'required': True,
-                    'error': 'CLASS_DECL: CLASS_INHER faltante'
-                },
-                {
-                    'match': '{',
-                    'required': True,
-                    'error': 'CLASS_DECL: { faltante'
-                },
-                {
-                    'match': self.FUNCTIONS,
-                    'required': False,
-                    'error': 'CLASS_DECL: FUNCTIONS faltante'
-                },
-                {
-                    'match': '}',
-                    'required': True,
-                    'error': 'CLASS_DECL: } faltante'
-                }
+                        'match': Identificador,
+                        'required': True,
+                        'error': 'CLASS_DECL: id faltante'
+                    },
+                    {
+                        'match': self.CLASS_INHER,
+                        'required': False,
+                        'error': 'CLASS_DECL: CLASS_INHER faltante'
+                    },
+                    {
+                        'match': '{',
+                        'required': True,
+                        'error': 'CLASS_DECL: { faltante'
+                    },
+                    {
+                        'match': self.FUNCTIONS,
+                        'required': False,
+                        'error': 'CLASS_DECL: FUNCTIONS faltante'
+                    },
+                    {
+                        'match': '}',
+                        'required': True,
+                        'error': 'CLASS_DECL: } faltante'
+                    }
                 ]
             }
         ]
@@ -79,7 +79,7 @@ class Patterns:
         return [
             {
                 'match': '<',
-                'required': True,
+                'required': False,
                 'error': 'CLASS_INHER: < faltante',
                 'next': [
                     {
@@ -259,7 +259,7 @@ class Patterns:
             {
                 'match': self.EXPRESSION,
                 'required': False,
-                'error': 'FOR_STMT_1: EXPR_STMT faltante'
+                'error': 'FOR_STMT_1: EXPRESSION faltante'
             },
     ]
 

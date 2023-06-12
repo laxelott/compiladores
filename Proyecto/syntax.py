@@ -42,11 +42,10 @@ def getToken(string: str) -> tuple[bool, Token, str, str]:
         Comentario,
         Cadena,
         Basura,
+        Numero,
         Especial,
         Reservado,
-        Numero,
         Identificador,
-        Newline,
         EOF
     ]
     

@@ -15,7 +15,7 @@ class PatternFinder:
     
     tokens: list[Token]
     pattern: list[dict]
-    def __init__(self, tokens) -> list:
+    def __init__(self, tokens):
         self.tokens = tokens
     
     def getCondition(self, step):
