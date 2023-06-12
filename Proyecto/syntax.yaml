@@ -1,0 +1,402 @@
+options:
+  error_message: '{ITEM} faltante'
+  debug: true
+
+patterns:
+  program:
+    - match: declaration
+      required: true
+      looping: true
+  declaration:
+    - match: class_decl
+      required: false
+    - match: fun_decl
+      required: false
+    - match: var_decl
+      required: false
+    - match: statement
+      required: false
+  class_decl:
+    - match: class
+      required: false
+      next:
+        - match: Identificador
+          required: true
+        - match: class_inher
+          required: false
+        - match: '{'
+          required: true
+        - match: functions
+          required: false
+        - match: '}'
+          required: true
+  class_inher:
+    - match: <
+      required: false
+      next:
+        - match: Identificador
+          required: true
+  fun_decl:
+    - match: fun
+      required: false
+      next:
+        - match: function
+          required: true
+  var_decl:
+    - match: var
+      next:
+        - match: Identificador
+          required: true
+        - match: var_init
+          required: false
+        - match: ;
+          required: true
+  var_init:
+    - match: '='
+      required: false
+      next:
+        - match: expression
+          required: true
+  statement:
+    - match: expr_stmt
+      required: false
+    - match: for_stmt
+      required: false
+    - match: if_stmt
+      required: false
+    - match: print_stmt
+      required: false
+    - match: return_stmt
+      required: false
+    - match: while_stmt
+      required: false
+    - match: block
+      required: false
+  expr_stmt:
+    - match: expression
+      required: false
+    - match: ;
+      required: false
+  for_stmt:
+    - match: for
+      required: false
+      next:
+        - match: (
+          required: true
+        - match: for_stmt_1
+          required: true
+        - match: for_stmt_2
+          required: true
+        - match: for_stmt_3
+          required: false
+        - match: )
+          required: true
+        - match: statement
+          required: true
+  for_stmt_1:
+    - match: var_decl
+      required: false
+    - match: expression
+      required: false
+  for_stmt_2:
+    - match: expression
+      required: false
+    - match: ;
+      required: true
+  for_stmt_3:
+    - match: expression
+      required: false
+  if_stmt:
+    - match: if
+      required: false
+      next:
+        - match: (
+          required: true
+        - match: expression
+          required: true
+        - match: )
+          required: true
+        - match: statement
+          required: true
+        - match: else_statement
+          required: false
+  else_statement:
+    - match: else
+      required: false
+      next:
+        - match: statement
+          required: true
+  print_stmt:
+    - match: print
+      required: false
+      next:
+        - match: expression
+          required: true
+        - match: ;
+          required: true
+  return_stmt:
+    - match: return
+      required: false
+      next:
+        - match: return_exp_opc
+          required: false
+        - match: ;
+          required: true
+  return_exp_opc:
+    - match: expression
+      required: false
+  while_stmt:
+    - match: while
+      required: false
+      next:
+        - match: (
+          required: true
+        - match: expression
+          required: true
+        - match: )
+          required: true
+        - match: statement
+          required: true
+  block:
+    - match: '{'
+      required: false
+      next:
+        - match: block_decl
+          required: true
+        - match: '}'
+          required: true
+  block_decl:
+    - match: declaration
+      required: false
+      looping: true
+  expression:
+    - match: assignment
+      required: false
+  assignment:
+    - match: logic_or
+      required: false
+    - match: assignment_opc
+      required: false
+  assignment_opc:
+    - match: '='
+      required: false
+      next:
+        - match: expression
+          required: true
+  logic_or:
+    - match: logic_and
+      required: false
+    - match: logic_or_2
+      required: false
+  logic_or_2:
+    - match: or
+      required: false
+      next:
+        - match: logic_and
+          required: false
+        - match: logic_or_2
+          required: true
+  logic_and:
+    - match: equality
+      required: false
+    - match: logic_and_2
+      required: false
+  logic_and_2:
+    - match: and
+      required: false
+      next:
+        - match: equality
+          required: true
+        - match: logic_and_2
+          required: true
+  equality:
+    - match: comparison
+      required: false
+    - match: equality_2
+      required: false
+  equality_2:
+    - match: '!='
+      required: false
+      next:
+        - match: comparison
+          required: true
+    - match: ==
+      required: false
+      next:
+        - match: comparison
+          required: true
+  comparison:
+    - match: term
+      required: false
+    - match: comparison_2
+      required: false
+      looping: true
+  comparison_2:
+    - match: '>'
+      required: false
+      next:
+        - match: term 
+          required: true
+    - match: '>?'
+      required: false
+      next:
+        - match: term 
+          required: true
+    - match: '<'
+      required: false
+      next:
+        - match: term 
+          required: true
+    - match: '<='
+      required: false
+      next:
+        - match: term 
+          required: true
+  term:
+    - match: factor
+      required: false
+    - match: term_2
+      required: false
+      looping: true
+  term_2:
+    - match: '-'
+      required: false
+      next:
+        - match: factor
+          required: true
+    - match: '+'
+      required: false
+      next:
+        - match: factor
+          required: true
+  factor:
+    - match: unary
+      required: false
+    - match: factor_2
+      required: false
+  factor_2:
+    - match: /
+      required: false
+      next:
+        - match: unary
+          required: true
+        - match: factor_2
+          required: true
+    - match: '*'
+      required: false
+      next:
+        - match: unary
+          required: true
+        - match: factor_2
+          required: true
+  unary:
+    - match: '!'
+      required: false
+      next:
+        - match: unary
+          required: true
+    - match: '-'
+      required: false
+      next:
+        - match: unary
+          required: true
+    - match: call
+      required: false
+  call:
+    - match: primary
+      required: false
+    - match: call_2
+      required: false
+  call_2:
+    - match: (
+      required: false
+      next:
+        - match: arguments_opc
+          required: false
+        - match: )
+          required: true
+        - match: call_2
+          required: false
+    - match: '.'
+      required: false
+      next:
+        - match: Identificador
+          required: true
+        - match: call_2
+          required: false
+  primary:
+    - match: 'true'
+      required: false
+    - match: 'false'
+      required: false
+    - match: 'null'
+      required: false
+    - match: 'this'
+      required: false
+    - match: Numero
+      required: false
+    - match: Cadena
+      required: false
+    - match: Identificador
+      required: false
+    - match: (
+      required: false
+      next:
+        - match: expression
+          required: false
+        - match: )
+          required: true
+    - match: super
+      required: false
+      next:
+        - match: '.'
+          required: true
+        - match: Identificador
+          required: true
+  function:
+    - match: Identificador
+      required: false
+      next:
+        - match: (
+          required: true
+        - match: parameter_opc
+          required: false
+        - match: )
+          required: true
+        - match: block
+          required: true
+  functions:
+    - match: function
+      required: false
+      looping: true
+  parameter_opc:
+    - match: parameters
+      required: false
+  parameters:
+    - match: Identificador
+      required: false
+      next:
+        - match: parameters_2
+          required: true
+  parameters_2:
+    - match: ','
+      required: false
+      looping: true
+      next:
+        - match: Identificador
+          required: true
+  arguments_opc:
+    - match: arguments
+      required: false
+  arguments:
+    - match: expression
+      required: false
+    - match: arguments_2
+      required: false
+  arguments_2:
+    - match: ','
+      required: false
+      looping: true
+      next:
+        - match: expression
+          required: true

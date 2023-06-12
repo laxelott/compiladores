@@ -1,15 +1,6 @@
 from enum import Enum
 import re 
 
-class Node:
-    name = ''
-    def __init__(self, value) -> None:
-        self.value = value
-    def match(str) -> str:
-        return ''
-    def __str__(self) -> str:
-        return repr(self.value)
-
 class Reservado(Node):
     name = 'reservado'
     def __init__(self, value) -> None:

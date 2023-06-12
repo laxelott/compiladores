@@ -1,4 +1,4 @@
-from enums import *
+from yaml_parser import Node
 
 class Token:
     def __init__(self, node: Node) -> None:
@@ -14,12 +14,7 @@ class Token:
         return f"({self.tipo()}) {self.node}"
 
 class Scanner():
-    def escanear(cadena: str):
-        resultado = Scanner.findTokens(cadena)
-
-        return resultado
-
-    def findTokens(cadena: str):
+    def findTokens(cadena: str, nodeList: list[Node], ignoreList: list[Node]):
         if len(cadena) == 0:
             return []
         
@@ -27,32 +22,20 @@ class Scanner():
         token: Token
         prev:str
         next: str
-        match, token, prev, next = getToken(cadena)
+        match, token, prev, next = getToken(cadena, nodeList)
         if match:
-            if type(token.node) is Basura:
+            if type(token.node) is ignoreList:
                 return [*Scanner.findTokens(prev), *Scanner.findTokens(next)]
             else:
                 return [*Scanner.findTokens(prev), token, *Scanner.findTokens(next)]
         else:
             raise Exception(f'Error! token inválida -> "{cadena}"')
         
-def getToken(string: str) -> tuple[bool, Token, str, str]:
-    # Lista de detección con prioridad
-    tipos: list[Node] = [
-        Comentario,
-        Cadena,
-        Basura,
-        Numero,
-        Especial,
-        Reservado,
-        Identificador,
-        EOF
-    ]
-    
+def getToken(string: str, nodeList: list[Node]) -> tuple[bool, Token, str, str]:
     token = ''
     match = False
     splits = ['', '']
-    for tipo in tipos:
+    for tipo in nodeList:
         if (found := tipo.match(string)) != '':
             token = Token(tipo(found))
             match = True

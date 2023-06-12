@@ -1,0 +1,104 @@
+options:
+  tokenOrder:
+    - Comentario
+    - Cadena
+    - Basura
+    - Numero
+    - Especial
+    - Reservado
+    - Identificador
+    - EOF
+  ignore:
+    - Basura
+  showOnly:
+    - Comentario
+
+tokens:
+  Reservado:
+    name: reservado
+    match:
+      regex: (^|\W){ITEM}($|\W)
+      flags:
+        - multiline
+    elements:
+      falso: 'false'
+      retornar: return
+      mientras: while
+      clase: class
+      imprimir: print
+      super: super
+      este: this
+      verdadero: 'true'
+      ademas: else
+      nulo: 'null'
+      para: for
+      funcion: fun
+      variable: var
+      numero: number
+      cadena: string
+      id: id
+      si: if
+      y: and
+      o: or
+  SQLReserved:
+    name: sql
+    match:
+      regex: '{ITEM}'
+    elements:
+      select: select
+      from: from
+      distinct: distinct
+  Especial:
+    name: especial
+    match:
+      regex: '{ITEM}'
+    elements:
+      noigual: '!='
+      iguala: ==
+      menorigual: <=
+      mayorigual: '>='
+      comentario: //
+      # comentarioInicio: /*
+      # comentarioFinal: */
+      parentIzq: (
+      parentDer: )
+      llaveIzq: '{'
+      llaveDer: '}'
+      coma: ','
+      punto: '.'
+      puntocoma: ;
+      menos: '-'
+      mas: +
+      por: '*'
+      entre: /
+      'no': '!'
+      igual: '='
+      menor: <
+      mayor: '>'
+  Numero:
+    name: numero
+    match:
+      regex: (?<!\w)\d+\.?\d*(?!\w)
+  Cadena:
+    name: cadena
+    match:
+      regex: ".*?"
+  Identificador:
+    name: identificador
+    match:
+      regex: '[^0-9\n\0 ]+\d*'
+  Comentario:
+    name: comentario
+    match:
+      regex: (\/\*.*?\*\/)|(--.*?(?=\n))
+  EOF:
+    name: end of file
+    match:
+      regex: '\0'
+  Basura:
+    name: basura
+    match:
+      regex: '{ITEM}'
+    elements:
+      espacio: ' '
+      nuevalinea: \n
