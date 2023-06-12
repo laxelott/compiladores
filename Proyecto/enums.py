@@ -17,7 +17,8 @@ class Reservado(Node):
     def match(str) -> str:
         list = [item.value for item in Reservado.elementos]
         for item in list:
-            if item in str:
+            found = re.search(rf"(^|\W){item}($|\W)", str, re.MULTILINE)
+            if found:
                 return item
         return ''
     
@@ -112,7 +113,7 @@ class Numero(Node):
             return ''
 
 class Cadena(Node):
-    name = 'value'
+    name = 'cadena'
     def __init__(self, value) -> None:
         super().__init__(value)
     def match(str) -> str:
@@ -164,12 +165,17 @@ class EOF(Node):
         else:
             return ''
         
-class Espacio(Node):
-    name = 'espacio'
+class Basura(Node):
+    name = 'basura'
     def __init__(self, value) -> None:
         super().__init__(value)
     def match(str) -> str:
-        if (str == ' '):
-            return ' '
-        else:
-            return ''
+        list = [item.value for item in Basura.elementos]
+        
+        for item in list:
+            if item in str:
+                return item
+        return ''
+    class elementos(Enum):
+        noigual = ' '
+        iguala = '\n'

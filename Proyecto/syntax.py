@@ -29,7 +29,7 @@ class Scanner():
         next: str
         match, token, prev, next = getToken(cadena)
         if match:
-            if type(token.node) is Espacio:
+            if type(token.node) is Basura:
                 return [*Scanner.findTokens(prev), *Scanner.findTokens(next)]
             else:
                 return [*Scanner.findTokens(prev), token, *Scanner.findTokens(next)]
@@ -41,11 +41,10 @@ def getToken(string: str) -> tuple[bool, Token, str, str]:
     tipos: list[Node] = [
         Comentario,
         Cadena,
-        Espacio,
-        Reservado,
-        SQLReserved,
-        Numero,
+        Basura,
         Especial,
+        Reservado,
+        Numero,
         Identificador,
         Newline,
         EOF
