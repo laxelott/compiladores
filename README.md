@@ -4,9 +4,12 @@
 - [x] Analizador Léxico
 
 ## Segundo parcial
-- [ ] Analizadór Sintáctico Descendente
+- [x] Analizadór Sintáctico Descendente
 - [ ] Analizador Sintáctico Ascendente
-- [ ] Primer Avance del Proyecto
+- [x] Primer Avance del Proyecto
+
+## Tercer parcial
+- [ ] Proyecto Final
 
 ---
 ## Equipo:
