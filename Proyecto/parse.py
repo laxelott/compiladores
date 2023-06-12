@@ -1,5 +1,7 @@
 from enums import *
 from syntax import Token
+from pprint import pprint
+import inspect
 
 class ParserError(Exception):
     pass
@@ -8,6 +10,7 @@ class PatternFinder:
     CONDITION_PATTERN = 1
     CONDITION_VALUE = 2
     CONDITION_TYPE = 3
+    CONDITION_FUNCTION = 4
     FINAL = False
     
     tokens: list[Token]
@@ -23,17 +26,27 @@ class PatternFinder:
             return self.CONDITION_PATTERN
         elif type(step['match']) is str:
             return self.CONDITION_VALUE
-        elif issubclass(step['match'], Node):
+        elif inspect.isclass(step['match']):
             return self.CONDITION_TYPE
+        elif callable(step['match']):
+            return self.CONDITION_FUNCTION
         else:
             return False
+
+    def runNext(self, step):
+        if 'next' in step:
+            return self.findRegularDefinition(step['next'])
+        else:
+            return []
+        
 
     def processMatch(self, step):
         result = [self.tokens[0].node]
         del self.tokens[0]
-        if 'next' in step:
-            result.extend(self.findRegularDefinition(step['next']))
-        elif 'final' in step:
+        
+        self.runNext(step)
+        
+        if 'final' in step:
             if step['final']:
                 self.FINAL = True
         return result
@@ -46,6 +59,14 @@ class PatternFinder:
             result = self.findRegularDefinition(step['match'])
             if (len(result) == 0 and step['required']):
                 return False
+            if len(result) > 0:
+                self.runNext(step)
+        elif condition == self.CONDITION_FUNCTION:
+            result = self.findRegularDefinition(step['match']())
+            if (len(result) == 0 and step['required']):
+                return False
+            if len(result) > 0:
+                self.runNext(step)
         elif condition == self.CONDITION_VALUE:
             if (self.tokens[0].node.value == step['match']):
                 result = self.processMatch(step)
@@ -77,9 +98,10 @@ class PatternFinder:
         result = []
         for step in pattern:
             if not (condition := self.getCondition(step)):
-                raise ParserError("Parser Error: match required!")
+                raise ParserError("Parser Error: invalid 'match'!")
             
             if (stepResult := self.processStep(step, condition)) == False:
+                self.printTokens()
                 raise ParserError(f"Error: {step['error']}!")
             
             result.extend(stepResult)
@@ -89,3 +111,8 @@ class PatternFinder:
                 break
             
         return result
+
+    def printTokens(self):
+        print("--- TOKENS:")
+        for token in self.tokens:
+            print(token.__str__())
