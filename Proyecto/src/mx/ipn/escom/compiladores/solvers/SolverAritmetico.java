@@ -64,7 +64,6 @@ public class SolverAritmetico extends Solver {
                 case RESTA:
                     return ((Double) resultadoIzquierdo - (Double) resultadoDerecho);
                 case MULTIPLICACION:
-                    System.out.println("multiplicacion");
                     return ((Double) resultadoIzquierdo * (Double) resultadoDerecho);
                 case DIVISION:
                     return ((Double) resultadoIzquierdo / (Double) resultadoDerecho);

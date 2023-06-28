@@ -32,7 +32,7 @@ public class SolverVariable extends Solver {
     }
 
     public static Boolean invalidateVariable(Nodo n, TablaSimbolos tabla) throws SolverException {
-        if(checkVariable(n, 0, tabla)) {
+        if(checkVariable(n, tabla)) {
             throw new SolverException("Variable " + n.getValue().lexema + " ya inicializada", n.getValue().linea);
         } else {
             return true;
@@ -62,7 +62,6 @@ public class SolverVariable extends Solver {
             invalidateVariable(n, 0, tabla);
             // Agregar hijo 1 como identificador
             this.tabla.asignar(n.getHijos().get(0).getValue().lexema);
-            return null;
         } else if (n.getValue().tipo == TipoToken.SET)  {
             // Checar que variable exista
             validateVariable(n, 0, tabla);

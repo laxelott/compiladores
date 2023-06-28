@@ -25,8 +25,6 @@ public class Arbol {
                         solver = new SolverAritmetico(n, this.tabla);
                         break;
                     case VAR:
-                        solver = new SolverVariable(n, this.tabla);
-                        break;
                     case SET:
                         solver = new SolverVariable(n, this.tabla);
                         break;
