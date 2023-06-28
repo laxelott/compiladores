@@ -1,7 +1,7 @@
 import sys
+from lexic import *
 from syntax import *
-from parse import *
-from patterns import *
+from syntax_patterns import *
 
 def readFile(filename):
     lines = []
@@ -25,6 +25,12 @@ def parseInput(input):
         if len(finder.tokens) > 0:
             print(finder.printTokens())
             raise ParserError(f"Error: {finder.tokens[0].node.value} inválido!")
+    
+    # TODO Hacer postfijo
+    
+    # AST
+    
+    
     except ParserError as error:
         print(error)
     else:

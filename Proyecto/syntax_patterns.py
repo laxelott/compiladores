@@ -1,5 +1,5 @@
 from __future__ import annotations 
-from enums import *
+from lexic_enums import *
 
 class Patterns:
     # PROGRAMA
