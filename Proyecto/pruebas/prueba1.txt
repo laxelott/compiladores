@@ -1,2 +1,5 @@
-var a;
-var b=0;
+// Prueba 1:
+var nombre = "Gabriel";
+var apellido = "Rodriguez";
+
+print nombre + " " + apellido;

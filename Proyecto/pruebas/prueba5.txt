@@ -1,18 +1,8 @@
-class Perro < Animal {
-    ladrar(){
-        print "Guauuu";
-    }
 
-    comer(){
-        while(tanque < 100){
-            tanque = tanque + 1;
-        }
-    }
-}
+// Prueba 5:
+var radio = 5;
+var pi = 3.1416;
+var area = pi*radio *radio;
 
-fun crearPerro(){
-    perro = Perro();
-    perror.ladrar();
-}
-
-crearPerro();
+print "El area es: ";
+print area;
