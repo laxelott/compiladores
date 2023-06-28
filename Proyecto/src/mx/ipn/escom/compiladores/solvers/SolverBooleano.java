@@ -26,7 +26,7 @@ public class SolverBooleano extends Solver {
 			case IDENTIFICADOR:
 				SolverVariable.validateVariable(n, tabla);
 				
-				Object valor = this.tabla.obtener((String) n.getValue().lexema);
+				Object valor = this.tabla.obtener((String) n.getValue().lexema).y;
 				if (valor.getClass() != Boolean.class) {
 					throw new SolverException("Booleano inválido", n.getValue().linea);
 				} else {
