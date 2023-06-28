@@ -99,7 +99,7 @@ public class Principal {
         } catch(SolverException exception) {
             String donde = "semántico";
             String mensaje = exception.getMessage();
-            int linea = 0;
+            int linea = exception.linea;
 
             reportar(linea, donde, mensaje);
         }

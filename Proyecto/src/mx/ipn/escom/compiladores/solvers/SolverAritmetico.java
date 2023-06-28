@@ -98,6 +98,7 @@ public class SolverAritmetico extends Solver {
                 case AND:
                     return ((Boolean) resultadoIzquierdo && (Boolean) resultadoDerecho);
                 case OR:
+                    return ((Boolean) resultadoIzquierdo || (Boolean) resultadoDerecho);
                 default:
                     throw new SolverException("Operador inválido para tipo", n.getValue().linea);
             }
