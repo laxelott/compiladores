@@ -9,7 +9,6 @@ public class SolverIf extends Solver {
 
     @Override
     protected Object resolver(Nodo n) throws SolverException {
-		// System.out.println("SolverIF");
         if (n.getHijos() == null) {
             throw new SolverException("Condición faltante", n.getValue().linea);
         }

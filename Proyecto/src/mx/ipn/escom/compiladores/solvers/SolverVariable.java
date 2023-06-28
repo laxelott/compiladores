@@ -9,7 +9,6 @@ public class SolverVariable extends Solver {
     
     @Override
     protected Object resolver(Nodo n) throws SolverException {
-		// System.out.println("SolverVAR");
         if (n.getHijos() == null) {
             throw new SolverException("Identificador faltante", n.getValue().linea);
         } else if (n.getHijos().size() > 2) {

@@ -13,7 +13,6 @@ public class SolverBooleano extends Solver {
 
     @Override
     protected Boolean resolver(Nodo n) throws SolverException {
-		System.out.println("SolverBOOL");
 		if (n.getHijos() != null) {
             throw new SolverException("Valor inválido boo", n.getValue().linea);
         }

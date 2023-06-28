@@ -76,9 +76,6 @@ public class Principal {
         GeneradorPostfija gpf = new GeneradorPostfija(tokens);
         List<Token> postfija = gpf.convertir();
 
-        // System.out.println(tokens);
-        // System.out.println(postfija);
-
         if (postfija.size() == 0) {
             return;
         }

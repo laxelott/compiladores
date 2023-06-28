@@ -46,12 +46,6 @@ public class SolverAritmetico extends Solver {
         Object resultadoIzquierdo = resolver(izq);
         Object resultadoDerecho = resolver(der);
 
-		// System.out.println("SolverAR");
-        // System.out.println(izq + " -> " + resultadoIzquierdo);
-        // System.out.println(n.getValue());
-        // System.out.println(der + " -> " + resultadoDerecho);
-        // System.out.println("--------------");
-
         // Checar que los resultados sean de la misma instancia
         if (!resultadoIzquierdo.getClass().equals(resultadoDerecho.getClass())) {
             throw new SolverException("Operandos de diferente tipo", n.getValue().linea);
