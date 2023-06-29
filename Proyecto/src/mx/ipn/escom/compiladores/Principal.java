@@ -72,9 +72,13 @@ public class Principal {
          * Parser parser = new Parser(tokens);
          * parser.parse();
          */
+        
+        System.out.println(tokens);
 
         GeneradorPostfija gpf = new GeneradorPostfija(tokens);
         List<Token> postfija = gpf.convertir();
+
+        System.out.println(postfija);
 
         if (postfija.size() == 0) {
             return;
@@ -97,8 +101,8 @@ public class Principal {
             String donde = "semántico";
             String mensaje = exception.getMessage();
             int linea = exception.linea;
-
             reportar(linea, donde, mensaje);
+            // exception.printStackTrace(System.out);
         }
     }
 

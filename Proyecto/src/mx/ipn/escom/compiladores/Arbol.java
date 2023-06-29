@@ -31,11 +31,14 @@ public class Arbol {
                     case IF:
                         solver = new SolverIf(n, this.tabla);
                         break;
+                    case WHILE:
+                        solver = new SolverWhile(n, this.tabla);
+                        break;
                     case PRINT:
                         solver = new SolverPrint(n, this.tabla);
                         break;
                     default:
-                        throw new SolverException("Posición inválida", n.getValue().linea);
+                        throw new SolverException("Posición inválida (" + t.lexema + ")", n.getValue().linea);
                 }
                 // Corriendo el solver adecuado
                 solver.resolver();

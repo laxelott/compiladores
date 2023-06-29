@@ -9,6 +9,7 @@ public class SolverAritmetico extends Solver {
 
     @Override
     protected Object resolver(Nodo n) throws SolverException {
+        // System.out.println("solAR");
         // No tiene hijos, es un operando
         if (n.getHijos() == null) {
             if (n.getValue().tipo == TipoToken.CADENA) {
@@ -20,7 +21,7 @@ public class SolverAritmetico extends Solver {
                 return solver.resolver();
             } else if (n.getValue().tipo == TipoToken.IDENTIFICADOR) {
                 // Checar que esté en la tabla de símbolos
-                SolverVariable.validateVariable(n, tabla);
+                SolverVariable.validateVariable(n, this.tabla);
                 Tuple<TipoToken, Object> res = this.tabla.obtener((String) n.getValue().lexema);
 
                 if (res.x == TipoToken.NUMERO) {
@@ -35,8 +36,8 @@ public class SolverAritmetico extends Solver {
             } else {
                 throw new SolverException("Valor inválido", n.getValue().linea);
             }
-        } else if (n.getHijos().size() > 2) {
-            throw new SolverException("Operador inválido", n.getValue().linea);
+        } else if (n.getHijos().size() != n.getValue().aridad()) {
+            throw new SolverException("Operador inválido (" + n.getHijos().get(0).getValue().lexema + ")", n.getValue().linea);
         }
 
         // Por simplicidad se asume que la lista de hijos del nodo tiene dos elementos

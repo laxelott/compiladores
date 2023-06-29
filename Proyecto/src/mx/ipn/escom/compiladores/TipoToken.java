@@ -5,6 +5,7 @@ public enum TipoToken {
 
     // Palabras reservadas
     IF, VAR, PRINT, ELSE,
+    WHILE, FOR,
     AND, OR,
     TRUE, FALSE,
     SET,

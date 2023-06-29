@@ -69,6 +69,8 @@ public class Token {
             case TRUE:
             case FALSE:
             case ELSE:
+            case WHILE:
+            case FOR:
                 return true;
             default:
                 return false;
@@ -79,6 +81,8 @@ public class Token {
         switch (this.tipo) {
             case IF:
             case ELSE:
+            case WHILE:
+            case FOR:
                 return true;
             default:
                 return false;

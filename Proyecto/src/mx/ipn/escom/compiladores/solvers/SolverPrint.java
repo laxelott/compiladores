@@ -9,6 +9,7 @@ public class SolverPrint extends Solver {
 
     @Override
     protected Object resolver(Nodo n) throws SolverException {
+        // System.out.println("solPR");
 		if (n.getHijos() == null) {
             throw new SolverException("Faltan argumentos", n.getValue().linea);
         } if (n.getHijos().size() > 1) {

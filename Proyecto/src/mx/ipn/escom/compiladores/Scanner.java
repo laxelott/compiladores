@@ -21,6 +21,8 @@ public class Scanner {
         palabrasReservadas.put("or", TipoToken.OR);
         palabrasReservadas.put("true", TipoToken.TRUE);
         palabrasReservadas.put("false", TipoToken.FALSE);
+        palabrasReservadas.put("while", TipoToken.WHILE);
+        palabrasReservadas.put("for", TipoToken.FOR);
     }
 
     Scanner(String source){

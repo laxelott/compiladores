@@ -9,6 +9,7 @@ public class SolverIf extends Solver {
 
     @Override
     protected Object resolver(Nodo n) throws SolverException {
+        // System.out.println("solIF");
         if (n.getHijos() == null) {
             throw new SolverException("Condición faltante", n.getValue().linea);
         }
@@ -37,6 +38,7 @@ public class SolverIf extends Solver {
 		if ((Boolean) condicion) {
 			// Correr lo de adentro del if
 			Arbol arbol = new Arbol(n);
+			arbol.tabla = this.tabla;
 			arbol.recorrer();
 		} else if (boolElse) {
 			Arbol arbol = new Arbol(nodoElse);
