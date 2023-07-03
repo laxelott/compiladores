@@ -15,31 +15,32 @@ public class SolverIf extends Solver {
 			throw new SolverException("Condición faltante", n.getValue().linea);
 		}
 
-		// Checar la condición
 		int end;
 		Nodo nodoElse = new Nodo(null);
-		Boolean boolElse = false;
+		Nodo nodoIf = n.clone();
 		Solver solver = new SolverAritmetico(n.getHijos().get(0));
 		Object condicion = solver.resolver();
+		
 		// Checar que la condición sea booleana
 		if (!(condicion instanceof Boolean)) {
 			throw new SolverException("Booleano inválido (" + condicion + ")", n.getValue().linea);
 		}
 
+		// Quitar condición del arbol
+		nodoIf.getHijos().remove(0);
+
 		// Checar si el ultimo nodo es un else
-		n.getHijos().remove(0);
-		end = n.getHijos().size() - 1;
-		if (n.getHijos().get(end).getValue().tipo == TipoToken.ELSE) {
-			boolElse = true;
-			nodoElse = n.getHijos().get(end);
-			n.getHijos().remove(end);
+		end = nodoIf.getHijos().size() - 1;
+		if (nodoIf.getHijos().get(end).getValue().tipo == TipoToken.ELSE) {
+			nodoElse = nodoIf.getHijos().get(end);
+			nodoIf.getHijos().remove(end);
 		}
 
 		if ((Boolean) condicion) {
 			// Correr lo de adentro del if
-			Arbol arbol = new Arbol(n);
+			Arbol arbol = new Arbol(nodoIf);
 			arbol.recorrer();
-		} else if (boolElse) {
+		} else if (nodoElse.getValue() != null) {
 			Arbol arbol = new Arbol(nodoElse);
 			arbol.recorrer();
 		}

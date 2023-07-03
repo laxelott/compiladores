@@ -17,7 +17,6 @@ public class GeneradorAST {
     public Arbol generarAST() {
         Stack<Nodo> pilaPadres = new Stack<>();
         Nodo raiz = new Nodo(null);
-        Boolean set = false;
         pilaPadres.push(raiz);
 
         Nodo padre = raiz;
@@ -27,19 +26,31 @@ public class GeneradorAST {
             if (t.tipo == TipoToken.EOF) {
                 break;
             }
+            
+            if (t.tipo == TipoToken.IGUAL) {
+                Boolean search = false;
+                // Buscar un padre var hasta un semicolon
+                for (int j=i; j>=0;--j) {
+                    if(postfija.get(j).tipo == TipoToken.VAR) {
+                        search = true;
+                        break;
+                    } else if (postfija.get(j).tipo == TipoToken.SEMICOLON) {
+                        break;
+                    }
+                }
+                // Si no hay padre (var), establecerlo como set
+                if (!search) {
+                    Nodo n = new Nodo(new Token(TipoToken.SET, "set", t.linea));
 
-            if (t.tipo == TipoToken.IDENTIFICADOR && !set) {
-                set = true;
-                --i;
-                Nodo n = new Nodo(new Token(TipoToken.SET, "set", t.linea));
+                    padre = pilaPadres.peek();
+                    padre.insertarSiguienteHijo(n);
 
-                padre = pilaPadres.peek();
-                padre.insertarSiguienteHijo(n);
-
-                pilaPadres.push(n);
-                padre = n;
-            } else if (t.esPalabraReservada()) {
-                set = true;
+                    pilaPadres.push(n);
+                    padre = n;
+                }
+            }
+            
+            if (t.esPalabraReservada()) {
                 Nodo n = new Nodo(t);
 
                 padre = pilaPadres.peek();
@@ -47,13 +58,10 @@ public class GeneradorAST {
 
                 pilaPadres.push(n);
                 padre = n;
-
             } else if (t.esOperando()) {
-                set = true;
                 Nodo n = new Nodo(t);
                 pila.push(n);
             } else if (t.esOperador()) {
-                set = true;
                 int aridad = t.aridad();
                 Nodo n = new Nodo(t);
                 for (int j = 1; j <= aridad; j++) {
@@ -62,8 +70,6 @@ public class GeneradorAST {
                 }
                 pila.push(n);
             } else if (t.tipo == TipoToken.SEMICOLON) {
-                set = false;
-
                 if (pila.isEmpty()) {
                     /*
                      * Si la pila esta vacía es porque t es un punto y coma

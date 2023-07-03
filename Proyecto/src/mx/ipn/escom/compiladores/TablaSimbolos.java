@@ -7,6 +7,13 @@ public class TablaSimbolos {
 
     private static final Map<String, Tuple<TipoToken, Object>> values = new HashMap<>();
 
+    public static void printValues() {
+        System.out.println("--- TABLE VALUES ---");
+        for (Map.Entry<String, Tuple<TipoToken, Object>> entry : values.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue().x + "(" + entry.getValue().y + ")");
+        }
+    }
+
     public static boolean existeIdentificador(String identificador) {
         return values.containsKey(identificador);
     }

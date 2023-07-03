@@ -15,19 +15,21 @@ public class SolverWhile extends Solver {
 			throw new SolverException("Condición faltante", n.getValue().linea);
 		}
 
+		Nodo nodoWhile = n.clone();
+
 		// Checar que la condición sea booleana
-		Nodo nodoCondicion = n.getHijos().get(0);
-		Solver solver = new SolverAritmetico(nodoCondicion);
+		Solver solver = new SolverAritmetico(n.getHijos().get(0));
 		Object condicion = solver.resolver();
 		if (!(condicion instanceof Boolean)) {
 			throw new SolverException("Booleano inválido (" + condicion + ")", n.getValue().linea);
 		}
 
-		n.getHijos().remove(0);
+		// Quitar condición del árbol
+		nodoWhile.getHijos().remove(0);
 
 		while ((Boolean) condicion) {
 			// Correr lo de adentro del if
-			Arbol arbol = new Arbol(n);
+			Arbol arbol = new Arbol(nodoWhile);
 			arbol.recorrer();
 			condicion = solver.resolver();
 		}

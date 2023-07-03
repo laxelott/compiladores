@@ -1,5 +1,5 @@
 package mx.ipn.escom.compiladores;
 
 public class Global {
-	public static Boolean DEBUG = true;
+	public static Boolean DEBUG = false;
 }

@@ -70,7 +70,7 @@ public class GeneradorPostfija {
                 pila.push(t);
             }
             else if(t.tipo == TipoToken.SEMICOLON){
-                while(!pila.isEmpty() && pila.peek().tipo != TipoToken.LBRACE){
+                while(!pila.isEmpty() && pila.peek().tipo != TipoToken.LBRACE && pila.peek().tipo != TipoToken.LPAREN){
                     Token temp = pila.pop();
                     postfija.add(temp);
                 }

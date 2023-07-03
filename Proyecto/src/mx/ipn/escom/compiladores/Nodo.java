@@ -2,8 +2,9 @@ package mx.ipn.escom.compiladores;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class Nodo {
+public class Nodo implements Cloneable {
     private final Token value;
     private List<Nodo> hijos;
 
@@ -60,5 +61,12 @@ public class Nodo {
         } else {
             return "(Nodo sin token)";
         }
+    }
+
+    @Override
+    public Nodo clone() {
+        Nodo n = new Nodo(this.value);
+        n.hijos = this.hijos.stream().collect(Collectors.toList());
+        return n;
     }
 }
