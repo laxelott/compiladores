@@ -3,13 +3,15 @@ package mx.ipn.escom.compiladores.solvers;
 import mx.ipn.escom.compiladores.*;
 
 public class SolverAritmetico extends Solver {
-    public SolverAritmetico(Nodo nodo, TablaSimbolos tabla) {
-        super(nodo, tabla);
+    public SolverAritmetico(Nodo nodo) {
+        super(nodo);
     }
 
     @Override
     protected Object resolver(Nodo n) throws SolverException {
-        // System.out.println("solAR");
+        if (Global.DEBUG)
+            System.out.println("solAR");
+            
         // No tiene hijos, es un operando
         if (n.getHijos() == null) {
             if (n.getValue().tipo == TipoToken.CADENA) {
@@ -17,12 +19,12 @@ public class SolverAritmetico extends Solver {
             } else if (n.getValue().tipo == TipoToken.NUMERO) {
                 return Double.valueOf(n.getValue().lexema);
             } else if (n.getValue().tipo == TipoToken.TRUE || n.getValue().tipo == TipoToken.FALSE) {
-                Solver solver = new SolverBooleano(n, this.tabla);
+                Solver solver = new SolverBooleano(n);
                 return solver.resolver();
             } else if (n.getValue().tipo == TipoToken.IDENTIFICADOR) {
                 // Checar que esté en la tabla de símbolos
-                SolverVariable.validateVariable(n, this.tabla);
-                Tuple<TipoToken, Object> res = this.tabla.obtener((String) n.getValue().lexema);
+                SolverVariable.validateVariable(n);
+                Tuple<TipoToken, Object> res = TablaSimbolos.obtener((String) n.getValue().lexema);
 
                 if (res.x == TipoToken.NUMERO) {
                     return res.y;
@@ -37,7 +39,8 @@ public class SolverAritmetico extends Solver {
                 throw new SolverException("Valor inválido", n.getValue().linea);
             }
         } else if (n.getHijos().size() != n.getValue().aridad()) {
-            throw new SolverException("Operador inválido (" + n.getHijos().get(0).getValue().lexema + ")", n.getValue().linea);
+            throw new SolverException("Operador inválido (" + n.getHijos().get(0).getValue().lexema + ")",
+                    n.getValue().linea);
         }
 
         // Por simplicidad se asume que la lista de hijos del nodo tiene dos elementos

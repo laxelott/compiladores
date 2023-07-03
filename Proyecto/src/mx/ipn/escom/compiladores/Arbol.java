@@ -3,47 +3,54 @@ package mx.ipn.escom.compiladores;
 import mx.ipn.escom.compiladores.solvers.*;
 
 public class Arbol {
-    private final Nodo raiz;
-    public TablaSimbolos tabla;
+    private Nodo raiz;
+
+    public Arbol() {}
 
     public Arbol(Nodo raiz) {
         this.raiz = raiz;
     }
 
+    public void ejecutarNodo(Nodo n) throws SolverException {
+        Solver solver;
+        Token t = n.getValue();
+        solver = new Solver(n);
+        
+        switch (t.tipo) {
+            // Operadores aritméticos
+            case SUMA:
+            case RESTA:
+            case MULTIPLICACION:
+            case DIVISION:
+                solver = new SolverAritmetico(n);
+                break;
+            case VAR:
+            case SET:
+                solver = new SolverVariable(n);
+                break;
+            case IF:
+                solver = new SolverIf(n);
+                break;
+            case WHILE:
+                solver = new SolverWhile(n);
+                break;
+            case FOR:
+                solver = new SolverFor(n);
+                break;
+            case PRINT:
+                solver = new SolverPrint(n);
+                break;
+            default:
+                throw new SolverException("Posición inválida (" + t.lexema + ")", n.getValue().linea);
+        }
+        // Corriendo el solver adecuado
+        solver.resolver();
+    }
+
     public void recorrer() throws SolverException {
-            Solver solver;
-            for (Nodo n : raiz.getHijos()) {
-                Token t = n.getValue();
-                solver = new Solver(n, this.tabla);
-                
-                switch (t.tipo) {
-                    // Operadores aritméticos
-                    case SUMA:
-                    case RESTA:
-                    case MULTIPLICACION:
-                    case DIVISION:
-                        solver = new SolverAritmetico(n, this.tabla);
-                        break;
-                    case VAR:
-                    case SET:
-                        solver = new SolverVariable(n, this.tabla);
-                        break;
-                    case IF:
-                        solver = new SolverIf(n, this.tabla);
-                        break;
-                    case WHILE:
-                        solver = new SolverWhile(n, this.tabla);
-                        break;
-                    case PRINT:
-                        solver = new SolverPrint(n, this.tabla);
-                        break;
-                    default:
-                        throw new SolverException("Posición inválida (" + t.lexema + ")", n.getValue().linea);
-                }
-                // Corriendo el solver adecuado
-                solver.resolver();
-                this.tabla = solver.tabla;
-            }
+        for (Nodo n : raiz.getHijos()) {
+            this.ejecutarNodo(n);
+        }
     }
 
     @Override

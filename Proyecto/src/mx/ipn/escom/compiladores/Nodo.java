@@ -49,12 +49,16 @@ public class Nodo {
 
     @Override
     public String toString() {
-        String res = "\n" + this.value.toString();
-        if (this.hijos != null) {
-            for (Nodo n : this.hijos) {
-                res += n.toString().replaceAll("\n", "\n  ");
+        if (this.value != null) {
+            String res = "\n" + this.value.toString();
+            if (this.hijos != null) {
+                for (Nodo n : this.hijos) {
+                    res += n.toString().replaceAll("\n", "\n  ");
+                }
             }
+            return res;
+        } else {
+            return "(Nodo sin token)";
         }
-        return res;
     }
 }

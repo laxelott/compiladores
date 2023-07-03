@@ -1,6 +1,5 @@
 package mx.ipn.escom.compiladores;
 
-
 import mx.ipn.escom.compiladores.generadores.*;
 import mx.ipn.escom.compiladores.solvers.SolverException;
 
@@ -12,15 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-
 public class Principal {
 
     static boolean existenErrores = false;
-    static TablaSimbolos tabla;
 
     public static void main(String[] args) throws IOException {
-        tabla = new TablaSimbolos();
-
         if (args.length > 1) {
             System.out.println("Uso correcto: interprete [script]");
 
@@ -72,13 +67,15 @@ public class Principal {
          * Parser parser = new Parser(tokens);
          * parser.parse();
          */
-        
-        System.out.println(tokens);
+
+        if (Global.DEBUG)
+            System.out.println(tokens);
 
         GeneradorPostfija gpf = new GeneradorPostfija(tokens);
         List<Token> postfija = gpf.convertir();
 
-        System.out.println(postfija);
+        if (Global.DEBUG)
+            System.out.println(postfija);
 
         if (postfija.size() == 0) {
             return;
@@ -91,18 +88,19 @@ public class Principal {
 
         GeneradorAST gast = new GeneradorAST(postfija);
         Arbol programa = gast.generarAST();
-        programa.tabla = tabla;
-        System.out.println(programa);
+
+        if (Global.DEBUG)
+            System.out.println(programa);
 
         try {
             programa.recorrer();
-            tabla = programa.tabla;
-        } catch(SolverException exception) {
+        } catch (SolverException exception) {
             String donde = "semántico";
             String mensaje = exception.getMessage();
             int linea = exception.linea;
             reportar(linea, donde, mensaje);
-            // exception.printStackTrace(System.out);
+            if (Global.DEBUG)
+                exception.printStackTrace(System.out);
         }
     }
 
