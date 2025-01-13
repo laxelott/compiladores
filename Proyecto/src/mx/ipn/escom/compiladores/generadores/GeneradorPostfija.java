@@ -22,6 +22,8 @@ public class GeneradorPostfija {
     public List<Token> convertir(){
         boolean estructuraDeControl = false;
         Stack<Token> pilaEstructurasDeControl = new Stack<>();
+        boolean convertIdToFunction = false;
+        boolean isFunction = false;
 
         for(int i=0; i<infija.size(); i++){
             Token t = infija.get(i);
@@ -35,22 +37,41 @@ public class GeneradorPostfija {
                  Si el token actual es una palabra reservada, se va directo a la
                  lista de salida.
                  */
-                postfija.add(t);
+                if (t.tipo == TipoToken.RETURN) {
+                    if (infija.get(i+1).tipo == TipoToken.SEMICOLON) {
+                        postfija.add(new Token(TipoToken.VOID, "void", t.linea));
+                    }
+                }
+                if (t.tipo == TipoToken.FUNCTIONTYPE) {
+                    convertIdToFunction = true;
+                    isFunction = true;
+                } else {
+                    postfija.add(t);
+                }
+                if (convertIdToFunction && t.esTipoDeDato()) {
+                    // Es una declaración de función
+                }
                 if (t.esEstructuraDeControl()){
                     estructuraDeControl = true;
                     pilaEstructurasDeControl.push(t);
                 }
             }
             else if(t.esOperando()){
-                postfija.add(t);
+                // Si hay un identificador después de una función declarada, convertirlo a una funcion
+                if (t.tipo == TipoToken.IDENTIFICADOR && convertIdToFunction) {
+                    convertIdToFunction = false;
+                    postfija.add(new Token(TipoToken.FUNCTION, t.lexema, t.linea));
+                    postfija.add(new Token(TipoToken.SEMICOLON, ";", null, t.linea));
+                } else {
+                    postfija.add(t);
+                }
             }
             else if(t.tipo == TipoToken.LPAREN){
                 pila.push(t);
             }
             else if(t.tipo == TipoToken.RPAREN){
                 while(!pila.isEmpty() && pila.peek().tipo != TipoToken.LPAREN){
-                    Token temp = pila.pop();
-                    postfija.add(temp);
+                    postfija.add(pila.pop());
                 }
                 if(pila.peek().tipo == TipoToken.LPAREN){
                     pila.pop();
@@ -61,6 +82,12 @@ public class GeneradorPostfija {
                 if(estructuraDeControl && infija.get(i + 1).tipo == TipoToken.LBRACE){
                     postfija.add(new Token(TipoToken.SEMICOLON, ";", null, t.linea));
                 }
+                if(estructuraDeControl && isFunction){
+                    isFunction = false;
+                    pilaEstructurasDeControl.pop();
+                    postfija.add(new Token(TipoToken.SEMICOLON, ";", null, t.linea));
+                }
+
             }
             else if(t.esOperador()){
                 while(!pila.isEmpty() && pila.peek().precedenciaMayorIgual(t)){
@@ -77,9 +104,6 @@ public class GeneradorPostfija {
                 postfija.add(t);
             }
             else if(t.tipo == TipoToken.LBRACE){
-                // Se mete a la pila, tal como el parentesis. Este paso
-                // pudiera omitirse, sólo hay que tener cuidado en el manejo
-                // del "}".
                 pila.push(t);
             }
             else if(t.tipo == TipoToken.RBRACE && estructuraDeControl){

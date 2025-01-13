@@ -7,7 +7,8 @@ public class SolverWhile extends Solver {
 		super(nodo);
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	protected Object resolver(Nodo n) throws SolverException {
 		if (Global.DEBUG)
 			System.out.println("solWH");
@@ -19,19 +20,19 @@ public class SolverWhile extends Solver {
 
 		// Checar que la condición sea booleana
 		Solver solver = new SolverAritmetico(n.getHijos().get(0));
-		Object condicion = solver.resolver();
-		if (!(condicion instanceof Boolean)) {
+		Tuple<TipoToken, Object> condicion = (Tuple<TipoToken, Object>) solver.resolver();
+		if (!(condicion.x == TipoToken.INT)) {
 			throw new SolverException("Booleano inválido (" + condicion + ")", n.getValue().linea);
 		}
 
 		// Quitar condición del árbol
 		nodoWhile.getHijos().remove(0);
 
-		while ((Boolean) condicion) {
+		while ((condicion.y.equals(1))) {
 			// Correr lo de adentro del if
 			Arbol arbol = new Arbol(nodoWhile);
 			arbol.recorrer();
-			condicion = solver.resolver();
+			condicion = (Tuple<TipoToken, Object>) solver.resolver();
 		}
 
 		return condicion;

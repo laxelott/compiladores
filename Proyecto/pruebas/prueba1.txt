@@ -1,5 +1,14 @@
 // Prueba 1:
-var nombre = "Gabriel";
-var apellido = "Rodriguez";
+string nombre = "Gabriel";
+string apellido = "Rodriguez";
+
+int edad() {
+    int numero = 12;
+    numero = 12 + 10;
+    return numero;
+}
 
 print nombre + " " + apellido;
+print edad;
+
+

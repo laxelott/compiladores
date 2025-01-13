@@ -29,9 +29,12 @@ public class Token {
     // Métodos auxiliares
     public boolean esOperando() {
         switch (this.tipo) {
-            case CADENA:
+            case STRING:
+            case CHAR:
             case IDENTIFICADOR:
-            case NUMERO:
+            case FUNCTION:
+            case INT:
+            case FLOAT:
             case TRUE:
             case FALSE:
                 return true;
@@ -62,7 +65,6 @@ public class Token {
 
     public boolean esPalabraReservada() {
         switch (this.tipo) {
-            case VAR:
             case SET:
             case IF:
             case PRINT:
@@ -71,6 +73,15 @@ public class Token {
             case ELSE:
             case WHILE:
             case FOR:
+            case FUNCTIONTYPE:
+            case FUNCTION:
+            case RETURN:
+            case VOID:
+            case INTTYPE:
+            case FLOATTYPE:
+            case STRINGTYPE:
+            case CHARTYPE:
+            case PARAMS:
                 return true;
             default:
                 return false;
@@ -83,6 +94,43 @@ public class Token {
             case ELSE:
             case WHILE:
             case FOR:
+            case FUNCTIONTYPE:
+            case FUNCTION:
+            case PARAMS:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean esTipoDeDato() {
+        switch (this.tipo) {
+            case INTTYPE:
+            case FLOATTYPE:
+            case STRINGTYPE:
+            case CHARTYPE:
+            case FUNCTIONTYPE:
+            case VOID:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean esNumero() {
+        switch (this.tipo) {
+            case INT:
+            case FLOAT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean esCaracter() {
+        switch (this.tipo) {
+            case STRING:
+            case CHAR:
                 return true;
             default:
                 return false;
@@ -134,5 +182,13 @@ public class Token {
             default:
                 return 0;
         }
+    }
+
+    public static boolean sonCompatibles(TipoToken t1, TipoToken t2) {
+        return t1 == t2
+            || (t1 == TipoToken.STRING && t2 == TipoToken.CHAR)
+            || (t1 == TipoToken.INT    && t2 == TipoToken.FLOAT)
+            || (t2 == TipoToken.STRING && t1 == TipoToken.CHAR)
+            || (t2 == TipoToken.INT    && t1 == TipoToken.FLOAT);
     }
 }

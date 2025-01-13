@@ -1,0 +1,17 @@
+// Prueba 8:
+/*
+Código para calcula la serie de Fibonacci
+*/
+int fib = 0;
+int lim = 10;
+int aux = 1;
+int init = 1;
+
+while(init <= lim){
+    print fib;
+    aux = aux + fib;
+    fib = aux - fib;
+    init = init + 1;
+}
+
+print "Fin";

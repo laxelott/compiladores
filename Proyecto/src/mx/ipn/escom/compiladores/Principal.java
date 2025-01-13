@@ -1,3 +1,4 @@
+
 package mx.ipn.escom.compiladores;
 
 import mx.ipn.escom.compiladores.generadores.*;
@@ -93,7 +94,9 @@ public class Principal {
             System.out.println(programa);
 
         try {
+            TablaSimbolos.generarNuevaTabla();
             programa.recorrer();
+            TablaSimbolos.printValues();
         } catch (SolverException exception) {
             String donde = "semántico";
             String mensaje = exception.getMessage();

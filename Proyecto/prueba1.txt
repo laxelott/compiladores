@@ -1,0 +1,20 @@
+// Prueba 1:
+string nombre;
+nombre = "Gabriel";
+string apellido = "Rodriguez";
+int condicion = 1;
+
+if (condicion) {
+    print "no";
+    print "tampoco";
+    print ">:C";
+}
+
+int edad (int identificador) {
+    int numero = 12;
+    numero = numero + 10;
+    return numero;
+}
+
+print nombre + " " + apellido;
+print edad(20);

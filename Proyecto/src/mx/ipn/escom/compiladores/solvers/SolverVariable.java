@@ -17,44 +17,47 @@ public class SolverVariable extends Solver {
             throw new SolverException("Valores de más", n.getValue().linea);
         }
 
-        if (n.getValue().tipo == TipoToken.VAR) {
+        Boolean isFunction = n.getHijos().get(0).getValue().tipo == TipoToken.FUNCTION;
+
+        if (n.getValue().esTipoDeDato()) {
             // Intentar inicializar variable
             invalidateVariable(n, 0);
             // Agregar hijo 1 como identificador
-            TablaSimbolos.asignar(n.getHijos().get(0).getValue().lexema);
+            if (isFunction) {
+                TablaSimbolos.asignarFuncion(n.getHijos().get(0).getValue().lexema, n.getValue().tipo);
+            } else {
+                TablaSimbolos.asignarVariable(n.getHijos().get(0).getValue().lexema, n.getValue().tipo);
+            }
         } else if (n.getValue().tipo == TipoToken.SET) {
             // Checar que variable exista
-            validateVariable(n, 0);
+            validateVariable(n, 1);
         }
 
-        if (n.getHijos().size() == 2) {
+        if (isFunction) {
+            
+        } else if (n.getHijos().size() == 2) {
             // Agregar solución de hijo 2 como valor de identificador
-            Solver solver = new SolverAritmetico(n.getHijos().get(1));
-            Object res = solver.resolver();
-            TipoToken tipo = null;
+            Solver solver = new SolverAritmetico(n.getHijos().get(0));
+            @SuppressWarnings("unchecked")
+            Tuple<TipoToken, Object>res = (Tuple<TipoToken, Object>) solver.resolver();
 
-            if (res instanceof Double) {
-                tipo = TipoToken.NUMERO;
-            } else if (res instanceof String) {
-                tipo = TipoToken.CADENA;
-            } else if (res instanceof Boolean) {
-                tipo = (Boolean) res ? TipoToken.TRUE : TipoToken.FALSE;
-            } else {
-                throw new SolverException("Valor de asignación inválido (" + res + ")", n.getValue().linea);
+            TablaSimbolos.asignarVariable(n.getHijos().get(1).getValue().lexema, res.x, res.y);
+
+            // Checar compatibilidad de tipo de dato
+            if (!Token.sonCompatibles(res.x, (TipoToken) TablaSimbolos.obtenerTipoVariable(n.getHijos().get(1).getValue().lexema))) {
+                throw new SolverException("Tipos incompatibles en (" + n.getHijos().get(1).getValue().lexema + ")", n.getValue().linea);
             }
-
-            TablaSimbolos.asignar(n.getHijos().get(0).getValue().lexema, tipo, res);
             return res;
         }
         return null;
     }
 
     public static Boolean checkVariable(Nodo n) {
-        return TablaSimbolos.existeIdentificador(n.getValue().lexema);
+        return TablaSimbolos.existeIdentificadorVariable(n.getValue().lexema);
     }
 
     public static Boolean checkVariable(Nodo n, int childNumber) {
-        return TablaSimbolos.existeIdentificador(n.getHijos().get(childNumber).getValue().lexema);
+        return TablaSimbolos.existeIdentificadorVariable(n.getHijos().get(childNumber).getValue().lexema);
     }
 
     public static Boolean validateVariable(Nodo n) throws SolverException {

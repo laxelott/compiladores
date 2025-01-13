@@ -22,9 +22,16 @@ public class Arbol {
             case RESTA:
             case MULTIPLICACION:
             case DIVISION:
+            case INT:
+            case FLOAT:
+            case STRING:
+            case CHAR:
                 solver = new SolverAritmetico(n);
                 break;
-            case VAR:
+            case INTTYPE:
+            case FLOATTYPE:
+            case STRINGTYPE:
+            case CHARTYPE:
             case SET:
                 solver = new SolverVariable(n);
                 break;
@@ -40,6 +47,8 @@ public class Arbol {
             case PRINT:
                 solver = new SolverPrint(n);
                 break;
+            case FUNCTIONTYPE:
+                solver = new SolverFuncion(n);
             default:
                 throw new SolverException("Posición inválida (" + t.lexema + ")", n.getValue().linea);
         }

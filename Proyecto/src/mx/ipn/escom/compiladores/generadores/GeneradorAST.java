@@ -1,6 +1,8 @@
 package mx.ipn.escom.compiladores.generadores;
 
 import mx.ipn.escom.compiladores.*;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -26,12 +28,14 @@ public class GeneradorAST {
             if (t.tipo == TipoToken.EOF) {
                 break;
             }
+
+            // System.out.println(new String(new char[pilaPadres.size()]).replace("\0", "  ") + t);
             
             if (t.tipo == TipoToken.IGUAL) {
                 Boolean search = false;
                 // Buscar un padre var hasta un semicolon
                 for (int j=i; j>=0;--j) {
-                    if(postfija.get(j).tipo == TipoToken.VAR) {
+                    if(postfija.get(j).esTipoDeDato()) {
                         search = true;
                         break;
                     } else if (postfija.get(j).tipo == TipoToken.SEMICOLON) {
@@ -43,7 +47,7 @@ public class GeneradorAST {
                     Nodo n = new Nodo(new Token(TipoToken.SET, "set", t.linea));
 
                     padre = pilaPadres.peek();
-                    padre.insertarSiguienteHijo(n);
+                    padre.insertarHijo(n);
 
                     pilaPadres.push(n);
                     padre = n;
@@ -54,7 +58,7 @@ public class GeneradorAST {
                 Nodo n = new Nodo(t);
 
                 padre = pilaPadres.peek();
-                padre.insertarSiguienteHijo(n);
+                padre.insertarHijo(n);
 
                 pilaPadres.push(n);
                 padre = n;
@@ -70,6 +74,10 @@ public class GeneradorAST {
                 }
                 pila.push(n);
             } else if (t.tipo == TipoToken.SEMICOLON) {
+                // System.out.println("Hijos:");
+                // System.out.println(pila);
+                // System.out.println("Padre");
+                // System.out.println(padre);
                 if (pila.isEmpty()) {
                     /*
                      * Si la pila esta vacía es porque t es un punto y coma
@@ -80,7 +88,7 @@ public class GeneradorAST {
                 } else {
                     Nodo n = pila.pop();
 
-                    if (padre.getValue().tipo == TipoToken.VAR || padre.getValue().tipo == TipoToken.SET) {
+                    if (padre.getValue().esTipoDeDato() || padre.getValue().tipo == TipoToken.SET) {
                         /*
                          * En el caso del VAR, es necesario eliminar el igual que
                          * pudiera aparecer en la raíz del nodo n.
@@ -88,25 +96,73 @@ public class GeneradorAST {
                         if (n.getValue().tipo == TipoToken.IGUAL) {
                             padre.insertarHijos(n.getHijos());
                         } else {
-                            padre.insertarSiguienteHijo(n);
+                            padre.insertarHijo(n);
                         }
                         pilaPadres.pop();
                         padre = pilaPadres.peek();
-                    } else if (padre.getValue().tipo == TipoToken.PRINT) {
-                        padre.insertarSiguienteHijo(n);
+                    } else if (padre.getValue().tipo == TipoToken.PRINT || padre.getValue().tipo == TipoToken.RETURN) {
+                        padre.insertarHijo(n);
                         pilaPadres.pop();
                         padre = pilaPadres.peek();
                     } else {
-                        padre.insertarSiguienteHijo(n);
+                        padre.insertarHijo(n);
                     }
                 }
             }
         }
+
+        /*
+         * POST-PROCESAMIENTO
+         */
+        postprocesar(raiz);
 
         // Suponiendo que en la pila sólamente queda un nodo
         // Nodo nodoAux = pila.pop();
         Arbol programa = new Arbol(raiz);
 
         return programa;
+    }
+
+    public void postprocesar(Nodo origen) {
+        if (origen == null) {
+            return;
+        }
+
+        if (origen.getHijos() != null) {
+            // Si el nodo actual es FUNCTION
+            int idxFunction = encontrarNodo(origen, TipoToken.FUNCTION);
+            if (idxFunction != -1) {
+                repararFuncionHuerfana(origen, idxFunction);
+            }
+            
+            // Revertir el orden de los hijos
+            Collections.reverse(origen.getHijos());
+
+            // Continuar con los hijos
+            for (Nodo child : origen.getHijos()) {
+                postprocesar(child);
+            }
+        }
+    }
+
+    public void repararFuncionHuerfana(Nodo origen, int idxFunction) {
+        Nodo functionNodo = origen.getHijos().get(idxFunction);
+        Nodo paramsNodo = origen.getHijos().get(encontrarNodo(origen, TipoToken.PARAMS));
+
+        origen.removerHijo(functionNodo);
+        origen.removerHijo(paramsNodo);
+        functionNodo.insertarHijos(origen.getHijos());
+        functionNodo.insertarHijo(paramsNodo);
+        origen.getHijos().clear();
+        origen.insertarHijo(functionNodo);
+    }
+
+    public int encontrarNodo(Nodo nodo, TipoToken target) {
+        for (int i=0; i< nodo.getHijos().size(); ++i) {
+            if (nodo.getHijos().get(i).getValue().tipo == target) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

@@ -1,14 +1,21 @@
 package mx.ipn.escom.compiladores;
 
 public enum TipoToken {
-    IDENTIFICADOR, NUMERO, CADENA,
+    IDENTIFICADOR,
+    INTTYPE, FLOATTYPE, STRINGTYPE, CHARTYPE,
+    FUNCTIONTYPE,
 
     // Palabras reservadas
-    IF, VAR, PRINT, ELSE,
+    IF, PRINT, ELSE,
     WHILE, FOR,
     AND, OR,
     TRUE, FALSE,
+    RETURN, VOID,
+    PARAMS,
     SET,
+
+    // Tipo de dato
+    INT, FLOAT, STRING, CHAR, FUNCTION,
 
     // Caracteres
     SUMA, RESTA, MULTIPLICACION, DIVISION,

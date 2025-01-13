@@ -7,8 +7,8 @@ public class SolverBooleano extends Solver {
 		super(nodo);
 	}
 
-	public static Boolean getBool(TipoToken valor) {
-		return valor.equals(TipoToken.TRUE);
+	public static Integer getBool(TipoToken valor) {
+		return valor.equals(TipoToken.TRUE) ? 1 : 0;
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class SolverBooleano extends Solver {
 			case IDENTIFICADOR:
 				SolverVariable.validateVariable(n);
 
-				Object valor = TablaSimbolos.obtener((String) n.getValue().lexema).y;
+				Object valor = TablaSimbolos.obtenerVariable((String) n.getValue().lexema);
 				if (valor.getClass() != Boolean.class) {
 					throw new SolverException("Booleano inválido", n.getValue().linea);
 				} else {

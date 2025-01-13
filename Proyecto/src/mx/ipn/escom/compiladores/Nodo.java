@@ -21,15 +21,6 @@ public class Nodo implements Cloneable {
         }
     }
 
-    public void insertarSiguienteHijo(Nodo n) {
-        if (hijos == null) {
-            hijos = new ArrayList<>();
-            hijos.add(n);
-        } else {
-            hijos.add(n);
-        }
-    }
-
     public void insertarHijos(List<Nodo> nodosHijos) {
         if (hijos == null) {
             hijos = new ArrayList<>();
@@ -37,6 +28,12 @@ public class Nodo implements Cloneable {
 
         for (Nodo n : nodosHijos) {
             hijos.add(n);
+        }
+    }
+
+    public void removerHijo(Nodo n) {
+        if (hijos != null) {
+            hijos.remove(n);
         }
     }
 

@@ -8,36 +8,41 @@ public class SolverAritmetico extends Solver {
     }
 
     @Override
-    protected Object resolver(Nodo n) throws SolverException {
-        if (Global.DEBUG)
+    protected Tuple<TipoToken, Object> resolver(Nodo n) throws SolverException {
+        if (Global.DEBUG) {
             System.out.println("solAR");
+        }
+
+        TipoToken tipo = null;
+        Object value = null;
             
         // No tiene hijos, es un operando
         if (n.getHijos() == null) {
-            if (n.getValue().tipo == TipoToken.CADENA) {
-                return n.getValue().lexema;
-            } else if (n.getValue().tipo == TipoToken.NUMERO) {
-                return Double.valueOf(n.getValue().lexema);
+            tipo = n.getValue().tipo;
+            if (n.getValue().tipo == TipoToken.STRING || n.getValue().tipo == TipoToken.CHAR) {
+                value = n.getValue().lexema;
+            } else if (n.getValue().tipo == TipoToken.INT) {
+                value = Double.valueOf(n.getValue().lexema);
             } else if (n.getValue().tipo == TipoToken.TRUE || n.getValue().tipo == TipoToken.FALSE) {
                 Solver solver = new SolverBooleano(n);
-                return solver.resolver();
+                value = solver.resolver();
             } else if (n.getValue().tipo == TipoToken.IDENTIFICADOR) {
                 // Checar que esté en la tabla de símbolos
                 SolverVariable.validateVariable(n);
-                Tuple<TipoToken, Object> res = TablaSimbolos.obtener((String) n.getValue().lexema);
+                Object resVal = TablaSimbolos.obtenerVariable(n.getValue().lexema);
+                tipo = (TipoToken) TablaSimbolos.obtenerTipoVariable(n.getValue().lexema);
 
-                if (res.x == TipoToken.NUMERO) {
-                    return res.y;
-                } else if (res.x == TipoToken.CADENA) {
-                    return String.valueOf(res.y);
-                } else if (res.x == TipoToken.TRUE || res.x == TipoToken.FALSE) {
-                    return SolverBooleano.getBool(res.x);
+                if (tipo == TipoToken.TRUE || tipo == TipoToken.FALSE) {
+                    value = SolverBooleano.getBool(tipo);
+                    tipo = TipoToken.INT;
                 } else {
-                    throw new SolverException("Valor inválido de identificador (" + res.y + ")", n.getValue().linea);
+                    value = resVal;
                 }
             } else {
                 throw new SolverException("Valor inválido", n.getValue().linea);
             }
+
+            return new Tuple<TipoToken, Object>(tipo, value);
         } else if (n.getHijos().size() != n.getValue().aridad()) {
             throw new SolverException("Operador inválido (" + n.getHijos().get(0).getValue().lexema + ")",
                     n.getValue().linea);
@@ -47,61 +52,66 @@ public class SolverAritmetico extends Solver {
         Nodo izq = n.getHijos().get(0);
         Nodo der = n.getHijos().get(1);
 
-        Object resultadoIzquierdo = resolver(izq);
-        Object resultadoDerecho = resolver(der);
+        Tuple<TipoToken, Object> resultadoIzquierdo = resolver(izq);
+        Tuple<TipoToken, Object> resultadoDerecho = resolver(der);
+        
+        TipoToken lTipo = resultadoIzquierdo.x;
+        TipoToken rTipo = resultadoDerecho.x;
+        Object lVal = resultadoIzquierdo.y;
+        Object rVal = resultadoDerecho.y;
 
-        // Checar que los resultados sean de la misma instancia
-        if (!resultadoIzquierdo.getClass().equals(resultadoDerecho.getClass())) {
+        // Checar que los resultados sean compatibles
+        if (!Token.sonCompatibles(lTipo, rTipo)) {
             throw new SolverException("Operandos de diferente tipo", n.getValue().linea);
         }
 
-        if (resultadoIzquierdo instanceof Double) {
+        if (lTipo == TipoToken.INT || lTipo == TipoToken.FLOAT) {
             switch (n.getValue().tipo) {
                 case SUMA:
-                    return ((Double) resultadoIzquierdo + (Double) resultadoDerecho);
+                    value = ((Double) lVal + (Double) rVal);
                 case RESTA:
-                    return ((Double) resultadoIzquierdo - (Double) resultadoDerecho);
+                    value = ((Double) lVal - (Double) rVal);
                 case MULTIPLICACION:
-                    return ((Double) resultadoIzquierdo * (Double) resultadoDerecho);
+                    value = ((Double) lVal * (Double) rVal);
                 case DIVISION:
-                    return ((Double) resultadoIzquierdo / (Double) resultadoDerecho);
+                    value = ((Double) lVal / (Double) rVal);
                 case MAYOR:
-                    return ((Double) resultadoIzquierdo > (Double) resultadoDerecho);
+                    value = ((Double) lVal > (Double) rVal);
                 case MAYOR_IGUAL:
-                    return ((Double) resultadoIzquierdo >= (Double) resultadoDerecho);
+                    value = ((Double) lVal >= (Double) rVal);
                 case MENOR:
-                    return ((Double) resultadoIzquierdo < (Double) resultadoDerecho);
+                    value = ((Double) lVal < (Double) rVal);
                 case MENOR_IGUAL:
-                    return ((Double) resultadoIzquierdo <= (Double) resultadoDerecho);
+                    value = ((Double) lVal <= (Double) rVal);
                 case IGUAL_A:
-                    return ((Double) resultadoIzquierdo == (Double) resultadoDerecho);
+                    value = ((Double) lVal == (Double) rVal);
                 default:
                     throw new SolverException("Operador inválido para tipo", n.getValue().linea);
             }
-        } else if (resultadoIzquierdo instanceof String) {
+        } else if (lTipo == TipoToken.STRING || lTipo == TipoToken.CHAR) {
             switch (n.getValue().tipo) {
                 case SUMA:
-                    return ((String) resultadoIzquierdo).concat((String) resultadoDerecho);
+                    value = (String.valueOf(lVal)).concat(String.valueOf(rVal));
                 case RESTA:
-                    return (((String) resultadoIzquierdo).replaceAll((String) resultadoDerecho, ""));
+                    value = ((String.valueOf(lVal)).replaceAll(String.valueOf(rVal), ""));
                 case IGUAL_A:
-                    return (((String) resultadoIzquierdo).equals((String) resultadoDerecho));
+                    value = ((String.valueOf(lVal)).equals(String.valueOf(rVal)));
                 default:
                     throw new SolverException("Operador inválido para tipo", n.getValue().linea);
             }
-        } else if (resultadoIzquierdo instanceof Boolean) {
+        } else if (lTipo == TipoToken.TRUE || lTipo == TipoToken.FALSE) {
             switch (n.getValue().tipo) {
                 case IGUAL_A:
-                    return ((Boolean) resultadoIzquierdo == (Boolean) resultadoDerecho);
+                    value = ((Boolean) lVal == (Boolean) rVal);
                 case AND:
-                    return ((Boolean) resultadoIzquierdo && (Boolean) resultadoDerecho);
+                    value = ((Boolean) lVal && (Boolean) rVal);
                 case OR:
-                    return ((Boolean) resultadoIzquierdo || (Boolean) resultadoDerecho);
+                    value = ((Boolean) lVal || (Boolean) rVal);
                 default:
                     throw new SolverException("Operador inválido para tipo", n.getValue().linea);
             }
         }
 
-        return null;
+        return new Tuple<TipoToken, Object>(tipo, value);
     }
 }

@@ -7,6 +7,7 @@ public class SolverPrint extends Solver {
         super(nodo);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Object resolver(Nodo n) throws SolverException {
         if (Global.DEBUG)
@@ -19,7 +20,7 @@ public class SolverPrint extends Solver {
         }
 
         Solver solver = new SolverAritmetico(n.getHijos().get(0));
-        Object valor = solver.resolver();
+        Tuple<TipoToken, Object> valor = (Tuple<TipoToken, Object>) solver.resolver();
 
         System.out.println(valor);
         return null;
