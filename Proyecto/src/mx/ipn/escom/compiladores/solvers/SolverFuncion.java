@@ -16,6 +16,15 @@ public class SolverFuncion extends Solver {
             throw new SolverException("Faltan argumentos", n.getValue().linea);
         }
 
+        /*
+         * TODO
+         *  - Diferente ejecución si es declaración o ejecucion
+         *  - Detectar si es declaración o ejecución
+         *  - Generar nueva tabla de simbolos y destruirla cuando acabe la ejecución del bloque
+         *  - Limpiar bloque de hijos de function para ejecución
+         *  - Usar parametros registrados para inicizliar tabla de simbolos
+         */
+
         Solver solver = new SolverParametros(n.getHijos().get(n.getHijos().size()));
         Tuple<TipoToken, String>[] params = (Tuple<TipoToken, String>[]) solver.resolver();
         
